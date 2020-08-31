@@ -1,0 +1,24 @@
+
+.table-responsive.sta-tables-cu-an {
+    clear: both;
+}
+
+
+.sta-date-cus .mat-form-field {
+    width: 100%;
+}
+
+.sta-date-cus .input-group {
+    width: 100%;
+}
+
+
+@media only screen and (max-width:1450px){
+
+	.table-responsives.statice-page-table{
+
+	min-height: .01%;
+    overflow-x: auto;
+    clear:both;
+	}
+}

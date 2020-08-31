@@ -1,0 +1,24 @@
+<app-header-component></app-header-component>
+<div class="container content ng-scope">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Releases:</h1>
+	<div class="well ng-scope">
+		<h3>v1.3</h3>
+		<div class="label label-success">CURRENT RELEASE</div>
+		<h4>Download:</h4>
+		<ngx-qrcode [qrc-element-type]="canvas" qrc-class="qrclass" [qrc-value] = "myAngularxQrCode"></ngx-qrcode>
+		<p><a href="https://drive.google.com/open?id=0Bybav4dLzkCEZlFneFBPeDJCZ2M">https://drive.google.com/open?id=0Bybav4dLzkCEZlFneFBPeDJCZ2M</a></p>
+		<h4>Release notes:</h4>
+		<ul>
+			<li>WebView is no longer refreshed incase of devices orientation or screenSize change</li>
+			<li>
+				Added version number to the bottom of the screen in main view so users can see if they should update
+				<ul>
+					<li>If You don't see it, You should update</li>
+				</ul>
+			</li>
+		</ul>
+		<p><strong>Release Date:</strong> 08JUN16</p>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

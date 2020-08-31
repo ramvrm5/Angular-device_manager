@@ -1,0 +1,185 @@
+.angular2-multiselectCustom2{
+    position: relative;
+    background-color: #b1b1b1;
+    border-radius: 4px;
+}
+
+.angular2-multiselectCustom2.count-ang-cu-select {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    max-width: 240px;
+    height: 45px;
+}
+
+.custom-class-example2{
+    font-size: 14px;
+}
+
+.st-custom {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+}
+
+.st-custom .custom-label {
+    float: left;
+    width: 100%;
+    max-width: 150px;
+    padding-right: 0;
+    margin-top: 0;
+    background: #f8f8f8;
+    /* padding-left: 5px; */
+    padding: 5px;
+}
+
+.st-custom .custom-control-wi {
+    float: left;
+    width: calc(100% - 150px);
+    padding-left: 10px;
+}
+
+.cust-tab-w {
+    clear: both;
+    margin: 20px 0;
+}
+
+.cust-tab-w p {
+    display: inline-block;
+    width: 100%;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 10px;
+}
+
+.cust-tab-w p .cust-tab-w-label {
+    float: none;
+    width: 100%;
+    max-width: 190px;
+    display: inline-block;
+    vertical-align: middle;
+    background: #f8f8f8;
+    padding: 5px;
+}
+.cust-tab-w p .cust-tab-w-wid {
+    display: inline-block;
+    width: calc(100% - 190px);
+    padding-left: 10px;
+}
+
+.cust-tab-w.tab-w-se p:first-child {
+    border: none;
+}
+
+.counter-his-cu-b button.btn {
+    margin: 0 10px !important;
+}
+
+.file-holder-cus input[type="file"] {
+    display: inline-block;
+    border: 1px solid #dce4ec;
+    padding: 6px 8px;
+    background: #f8f8f8;
+    /* color: #fff; */
+    vertical-align: middle;
+    margin: 0 5px 0 10px;
+}
+
+.form-group.full-wt-an .input-group {
+    width: 100%;
+}
+
+.coun-his-custom .modal-title {
+    padding-left: 15px;
+    padding-bottom: 10px;
+    font-size: 24px;
+}
+.coun-his-custom .btn.btn-success {
+    margin-left: 15px;
+}
+
+
+
+@media only screen and (max-width:991px){
+
+
+    .file-holder-cus input[type="file"] {
+        max-width:260px;
+    }
+
+}
+
+@media only screen and (max-width:767px){
+    .file-holder-cus {
+        display: block;
+    }
+
+    .file-holder-cus input[type="file"] {
+        margin-left: 0 !important;
+    }
+    .cust-tab-w .file-up-cu-outer .cust-tab-w-label {
+        vertical-align: top !important;
+    }
+
+
+}
+
+@media only screen and (max-width:575px){
+
+    .st-custom .custom-label, .cust-tab-w p .cust-tab-w-label {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .st-custom .custom-control-wi, .cust-tab-w p .cust-tab-w-wid {
+        width:100%;
+        padding-left:0px;
+        margin-top: 10px;
+    }
+
+    .counter-his-cu-b .cunt-text {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .counter-his-cu-b button.btn {
+        margin-left: 0 !important;
+         margin-right: 5px !important;
+        margin-bottom: 10px !important;
+         margin-top: 10px !important;
+    }
+
+    .angular2-multiselectCustom2.count-ang-cu-select{margin:10px 0;}
+
+    .file-holder-cus input[type="file"] {
+        max-width:240px;
+        font-size: 13px;
+    }
+
+    .file-text-up {
+        padding-bottom: 5px;
+        display: block;
+    }
+
+}
+
+@media only screen and (max-width:400px){
+
+    .file-holder-cus input[type="file"] {
+        max-width:220px;
+    }
+
+
+}
+
+@media only screen and (max-width:365px){
+
+.file-holder-cus input[type="file"] {
+    max-width:200px;
+}
+
+
+}

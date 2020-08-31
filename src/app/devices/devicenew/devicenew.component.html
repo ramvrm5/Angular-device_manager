@@ -1,0 +1,68 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Create New Device</h1>
+	<div class="well">
+		<form [formGroup]="deviceForm" (ngSubmit)="createDevice(deviceForm.value)" class="create-new-device">
+			<div class="form-group">
+				<label>Device Code</label>
+				<input type="text" formControlName="code" placeholder="Barcode" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Device Type</label>
+				<input type="text" formControlName="type" placeholder="Ex. Massage Chair" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<button *ngFor="let devList of dList" type="button" (click)="device_type(devList.device_name)" class="btn btn-default btn-xs">{{devList.device_name}}</button>
+			</div>
+			<div class="form-group">
+				<label>Device Name</label>
+				<input type="text" placeholder="Ex. Ultra Plus" formControlName="name" required="" class="form-control">
+			</div>
+			<div *ngIf="showName" class="form-group">
+				<button type="button" (click)="device_name('Standard')" class="btn btn-default btn-xs">Standard</button>
+				<button type="button" (click)="device_name('Light')" class="btn btn-default btn-xs">Light</button>
+				<button type="button" (click)="device_name('Light Plus')" class="btn btn-default btn-xs">Light Plus</button>
+				<button type="button" (click)="device_name('Ultra Plus')" class="btn btn-default btn-xs">Ultra Plus</button>
+				<button type="button" (click)="device_name('Dream')" class="btn btn-default btn-xs">Dream</button>
+				<button type="button" (click)="device_name('RT-M01')" class="btn btn-default btn-xs">RT-M01</button>
+			</div>
+			<div class="form-group">
+				<label>Address</label>
+				<input type="text" placeholder="address" formControlName="address" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Device Location</label>
+				<input type="text" formControlName="location" placeholder="Ex. Lagedi Storage" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Key Number (not required)</label>
+				<input type="text" formControlName="key" placeholder="Ex. 5353344" class="form-control">
+			</div>
+			<div class="form-group">
+				<label>Device Status</label>
+				<select formControlName="status" class="form-control">
+					<option value="online">Online</option>
+					<option value="offline">Offline</option>
+					<option value="error">Error</option>
+					<option value="storage">Storage</option>
+					<option value="transporting">Transporting In</option>
+					<option value="transporting">Transporting Out</option>
+					<option value="transporting">Booked</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<label>Assign To</label>
+				<select formControlName="assign_to" class="form-control">
+					<option *ngFor="let user of users" value="{{user.username}}">{{user.username}}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<button [disabled]="deviceForm.invalid" type="submit" class="btn btn-success"><i class="fa fa-plus"></i><i ng-show="sending" class="fa fa-spinner fa-pulse ng-hide"></i>Add</button>
+			</div>
+		</form>
+	</div>
+	<!------------well-end----------->
+</div>
+<!------------conatiner-end----------->
+<app-footer-component></app-footer-component>

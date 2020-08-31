@@ -1,0 +1,742 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h5>Device:</h5>
+	
+	<div class="loading scope hide"><i class="fa fa-spinner fa-pulse fa-4x"></i></div>
+	<div *ngIf="show" class="device-conatiner scope">
+		<h2 *ngIf="!formval" class="">{{device.type}} : {{device.name}} 
+			<button (click)="edit()" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i>  Edit</button>
+			<button class="btn btn-sm btn-danger" (click)="deleteDevice()"><i class="fa fa-archive"></i></button>
+		</h2>
+
+		<form *ngIf="formval" [formGroup]="updateForm" class="well-sm" (ngSubmit)="update(updateForm.value)" novalidate>
+			<div class="form-group row">
+				<div class="col-xs-12 col-sm-4"><strong>Type:</strong>
+					<input class="form-control" formControlName="type">
+				</div>
+				<div class="col-xs-12 col-sm-8"><strong>Name:</strong>
+					<input class="form-control" formControlName="name">
+				</div>
+			</div>
+			<div class="form-group">
+				<button [disabled]="!updateForm.valid" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+				<button (click)="edit()" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+			</div>
+		</form>
+		<h4 class="">{{viewId}}</h4>
+
+		<!------------RegionView-well-start----------->
+		<p class="st-custom"><span class="custom-label"><strong>Region:</strong></span>
+			<span class="custom-control-wi"><span class="label label-success">{{device.region}}</span>
+			<button class="btn btn-sm btn-success" (click)="changeregion()"><i class="fa fa-dashboard"></i> Change Region</button></span>
+		</p>
+		<!------------RegionView-well-End----------->
+
+		<!------------DeviceTypeView-well-start----------->
+		<p class="st-custom"><span class="custom-label"><strong>Device Type:</strong></span>
+			<span class="custom-control-wi"><span class="label label-success">{{device.type}}</span>
+			<button class="btn btn-sm btn-success" (click)="changetype()"><i class="fa fa-dashboard"></i> Change Device Type</button></span>
+		</p>
+		<!-------------DeviceTypeView-well-End----------->
+
+		<p class=" loaction-tra st-custom"><span class="custom-label"><strong>Location:</strong></span>
+		    <span class="custom-control-wi">{{device.location}} ({{device.location_start | countDays : 'getdiff' : 'wout'}})
+			<button type="button" class="btn btn-xs btn-primary" (click)="location_view('location')">history<i class="fa" [ngClass]="locClass"></i></button>
+			<button class="btn btn-sm btn-success" id="move" (click)="move()"><i class="fa fa-truck"></i> Move</button></span>
+		</p>
+		<!------------locationView-well-start----------->
+		<div *ngIf="locationView=='location'" class="well well-sm coun-his-custom">
+			<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Location</th>
+							<th>From Date</th>
+							<th>End Date</th>
+							<th>Stay Length</th>
+						</tr>
+					</thead>
+					<tbody> 
+						<tr class="hide">
+							<td colspan="4">
+								<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+							</td>
+						</tr>
+						<tr class="scope" *ngFor="let location of locationData">
+							<td><strong class="">{{location.location}}</strong></td>
+							<td class="">{{location.start_date | countDays : 'dateType'}}</td>
+							<td class="">{{location.end_date | countDays : 'dateType'}}</td>
+							<td class="">{{location.start_date | countDays : 'getdiff' : 'wout':location.end_date}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!------------history-well-end----------->
+		<p class="st-custom"><span class="custom-label"><strong>Status:</strong></span>
+			<span class="custom-control-wi"><span class="label label-success" [ngClass]="highlightDevice(device.status)">{{device.status}}</span>
+			<button type="button" class="btn btn-xs btn-primary" (click)="location_view('status')">history<i class="fa" class="fa" [ngClass]="statClass"></i></button>
+			<button class="btn btn-sm btn-success change-stuats" (click)="changeStatus()"><i class="fa fa-dashboard"></i> Change</button></span>
+		</p>
+		<p class="st-custom"><span class="custom-label"><strong>User:</strong></span>
+			<span class="custom-control-wi"><span class="label label-success">{{device.assign_to}}</span>
+			<button class="btn btn-sm btn-success" (click)="changeUser()"><i class="fa fa-dashboard"></i> Change User</button></span>
+		</p>
+		<!-- online-history-start -->
+		<div *ngIf="locationView=='status'" class="well well-sm">
+			<div class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Location</th>
+							<th>From Date</th>
+							<th>End Date</th>
+							<th>Status Length</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="hide">
+							<td colspan="4">
+								<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+							</td>
+						</tr>
+						<tr class="scope" *ngFor="let status of statusData">
+							<td><span class="label" [ngClass]="highlightDevice(status.status)">{{status.status}}</span></td>
+							<td class="">{{status.start_date | countDays : 'dateType'}}</td>
+							<td class="">{{status.end_date | countDays : 'dateType'}}</td>
+							<td class="">{{status.start_date | countDays : 'getdiff' : 'wout':status.end_date}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- online-history-end -->
+
+		<p *ngIf="!changingComment" class="ng st-custom"><span class="custom-label"><strong>Comment:</strong> </span>
+			<span class="custom-control-wi">{{device.comment}}
+			<button (click)="commnet()" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> Edit</button></span>
+		</p>
+		<!-- changingComment-start -->
+		<form *ngIf="changingComment" [formGroup]="commentForm" class="well well-sm" (ngSubmit)="comment(commentForm.value)" class="well well-sm">
+			<div class="form-group row">
+				<div class="col-xs-12"><strong>Comment:</strong>
+					<textarea rows="2" class="form-control" formControlName="comment"></textarea>
+				</div>
+			</div>
+			<div class="form-group">
+				<button class="btn btn-success"><i class="fa fa-check"></i>  Save</button>
+				<button (click)="commnet()" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+			</div>
+		</form>
+		<!-- changingComment-end -->
+
+
+		<p class="ng st-custom"><span class="custom-label"><strong>Warranty end date:</strong></span> 
+			<span class="custom-control-wi">{{device.Warranty_end_date}}
+			<button (click)="Warranty_end_date()" class="btn btn-sm btn-success"><i class="fa fa-edit"></i> Update</button></span>
+		</p>
+		<!-- changingwarranty-start -->
+		<form *ngIf="changingWarranty_end_date"  class="well well-sm"  class="well well-sm">
+				<div class="form-group">
+						<div class="input-group date">
+							<input type="text" name="Warranty_enddate" [(ngModel)]="Warranty_enddate" class="form-control" bsDatepicker [bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true }"><span class="input-group-addon">
+								<i class="fa fa-calendar-o"></i></span>
+						</div>
+					</div>
+			<div class="form-group">
+				<button (click)="changingWarranty()" class="btn btn-success"><i class="fa fa-check"></i>  Save</button>
+				<button (click)="Warranty_end_date()" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+			</div>
+		</form>
+		<!-- changingwarranty-end -->
+
+		<!-- Contract-Status Start-->
+		<p class="st-custom"><span class="custom-label"><strong>Contract Status:</strong></span>
+			<span class="custom-control-wi"><span class="label label-success">{{device.Contract_Status}}</span>
+			<button class="btn btn-sm btn-success" (click)="changeContractStatus()"><i class="fa fa-dashboard"></i> Change Contract Status</button></span>
+		</p>
+		<!-- Contract-Status end-->
+
+		<!-- Contract-Field Start-->
+		<div class="panel cust-tab-w" [ngClass]="highlightControl(device)">
+			<div class="panel-heading">Contact field:</div>
+			<div class="panel-body">
+				<span>
+					<p><span class="cust-tab-w-label"><strong>Client name : </strong></span>
+						<span class="cust-tab-w-wid"><span>{{Client_name}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Client name')"><i class="fa fa-dashboard"></i>
+							Change Client name</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Address 1 : </strong></span>
+						<span class="cust-tab-w-wid"><span>{{Address_1}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Address 1')"><i class="fa fa-dashboard"></i>
+							Change Address 1</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Address 2 : </strong></span>
+						<span class="cust-tab-w-wid"><span>{{Address_2}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Address 2')"><i class="fa fa-dashboard"></i>
+							Change Address 2</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Contact person:</strong></span>
+						<span class="cust-tab-w-wid"><span>{{Contact_person}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Contact person')"><i class="fa fa-dashboard"></i>
+							Change Contact person</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Contact person number:</strong></span>
+						<span class="cust-tab-w-wid"><span>{{Contact_person_number}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Contact person number')"><i class="fa fa-dashboard"></i>
+							Change Contact person number</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Contact person position:</strong></span>
+						<span class="cust-tab-w-wid"><span>{{Contact_person_position}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Contact person position')"><i class="fa fa-dashboard"></i>
+							Change Contact person position</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>Register code:</strong></span>
+						<span class="cust-tab-w-wid"><span>{{Register_code}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('Register code')"><i class="fa fa-dashboard"></i>
+							Change Register code</button></span>
+					</p>
+					<p><span class="cust-tab-w-label"><strong>VAT code:</strong></span>
+						<span class="cust-tab-w-wid"><span>{{VAT_code}}</span>
+						<button class="btn btn-sm btn-success" (click)="changeContractField('VAT code')"><i class="fa fa-dashboard"></i>
+							Change VAT code</button></span>
+					</p>
+					<form [formGroup]="form" (ngSubmit)="onSubmit()">
+						<p class="file-up-cu-outer"><span class="cust-tab-w-label"><strong>Upload contract file:</strong></span>
+							<span class="cust-tab-w-wid"><span class="file-text-up">{{Upload_contract_file}}</span>
+							<span class="file-holder-cus"><input type="file" name="avatar" (change)="onFileSelect($event)" />
+							<span *ngIf="upload"><button class="btn btn-sm btn-success" type="submit"><i class="fa fa-dashboard"></i>Upload</button></span></span></span>
+						</p>
+					</form>
+				</span>
+			</div>
+		</div>
+		<!-- Contract-Field End-->
+
+		<div class="panel cust-tab-w tab-w-se" [ngClass]="highlightControl(device)">
+			<div class="panel-heading">Contract:</div>
+			<div class="panel-body">
+				<span>
+					<span>
+						<span *ngIf="mainContent">
+							<p *ngIf="firsttimecontent">
+								<button *ngIf="markRetrieved" (click)="markRetrievedClick()" data-toggle="tooltip"
+									tooltip-placement="right"
+									title="This will mark the device as retrieved from customer and also make the last contract inactive"
+									show="highlightContract() == 'panel-danger'" class="btn btn-success btn-xs"><i
+										class="fa fa-check"></i>
+									Mark
+									Retrieved</button>
+							</p>
+							<p>
+								<button *ngIf="markRetrievedRed" (click)="markRetrievedRedClick()" data-toggle="tooltip"
+									tooltip-placement="right"
+									title="This will mark the device as retrieved from customer and also make the last contract inactive"
+									show="highlightContract() == 'panel-danger'" class="btn btn-danger btn-xs"><i
+										class="fa fa-undo"></i>
+									Mark
+									Unretrieved</button>
+							</p>
+							<span *ngIf="firsttimecontent">
+								<p><span class="cust-tab-w-label"><strong>Client:</strong></span>
+								 <span class="cust-tab-w-wid"><span *ngIf="contractData.name">{{contractData.name}} </span></span> </p>
+
+								<p><span class="cust-tab-w-label"><strong>Start Date:</strong></span>
+								 <span class="cust-tab-w-wid">{{contractData.start_date | date:'yyyy-MM-dd' }}</span></p>
+
+								<p><span class="cust-tab-w-label"><strong>End Date:</strong></span>
+								 <span class="cust-tab-w-wid">{{contractData.end_date | date:'yyyy-MM-dd' }}</span></p>
+
+								<p><span class="cust-tab-w-label"><strong>Calculate Contact Time:</strong></span> 
+									<span class="cust-tab-w-wid">{{calculate_contact_time }} days</span></p>
+
+								<p><span class="cust-tab-w-label"><strong>Monthly Rent:</strong> </span>
+									<span class="cust-tab-w-wid">{{Monthly_rent}}</span></p>
+								<button data-toggle="tooltip" (click)="openChangePanel()" tooltip-placement="bottom"
+									title="Use this when contract terms change. This will leave a mark in the history by ending current contract and starting a new one."
+									class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Change</button>
+								<button data-toggle="tooltip" (click)="openCorrectPanel()" tooltip-placement="bottom"
+									title="Use this to fix an error in current contract. Do NOT use this when termsof contract have changed."
+									class="btn btn-default btn-sm"><i class="fa fa-edit"></i> Correct</button>
+							</span>
+							<span *ngIf="addContract">
+								<h4>No active contract!</h4>
+								<button (click)="setCreatingContract()" class="btn btn-success"><i class="fa fa-plus"></i> Add</button>
+							</span>
+
+						<!----NEW CONTRACT---------->
+							<span *ngIf="creatingContract">
+								<h4>New Contract</h4>
+								<div class="form-group">
+									<input type="text" name="name" [(ngModel)]="newContractdetails.name" placeholder="Contract Name" class="form-control">
+								</div>
+								<div class="form-group">
+									<div class="input-daterange input-group">
+										<input type="text" name="start_date" [(ngModel)]="newContractdetails.start_date" class="form-control" bsDatepicker
+											[bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true}" [maxDate]="newContractdetails.newend_date"><span
+											class="input-group-addon">to</span>
+										<input type="text" name="end_date" [(ngModel)]="newContractdetails.end_date" class="form-control" bsDatepicker 
+											[bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true}" [minDate]="newContractdetails.newstart_date">
+									</div>
+								</div>
+								<div class="form-group">
+									<button (click)="createContract()" class="btn btn-success"><i class="fa fa-check"></i> Create</button>
+									<button (click)="cancelContract()" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+								</div>
+							</span>
+						</span>
+
+						<!----Change---------->
+						<span *ngIf="ChangeContent">
+							<div class="form-group full-wt-an">
+								<div class="input-group">
+									<input type="text" name="name" [(ngModel)]="updateContractdetails.name" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group date">
+									<input type="text" name="start_date" [(ngModel)]="updateContractdetails.start_date" class="form-control" bsDatepicker [bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true }"><span class="input-group-addon">
+										<i class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" name="end_date" [(ngModel)]="updateContractdetails.end_date" class="form-control" bsDatepicker [bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true }"><span class="input-group-addon"><i
+											class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<button (click)="saveChangePanel()" class="btn btn-success"><i class="fa fa-edit"></i> save</button>
+								<button (click)="cancelChangePanel()" class="btn btn-danger "><i class="fa fa-times"></i> Cancel</button>
+							</div>
+						</span>
+						<!----Correct---------->
+						<span *ngIf="CorrectContent">
+							<div class="form-group full-wt-an">
+								<div class="input-group">
+									<input type="text" name="name" [(ngModel)]="updateContractdetails.name" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group date">
+									<input type="text" name="start_date" [(ngModel)]="updateContractdetails.start_date" class="form-control" bsDatepicker [bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true }"><span class="input-group-addon">
+										<i class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" name="end_date" [(ngModel)]="updateContractdetails.end_date" class="form-control" bsDatepicker [bsConfig]="{dateInputFormat: 'YYYY-MM-DD', containerClass: 'theme-blue',isAnimated: true }"><span class="input-group-addon"><i
+											class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<button (click)="saveCorrectPanel()" class="btn btn-success"><i class="fa fa-edit"></i> save</button>
+								<button (click)="cancelChangePanel()" class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+							</div>
+						</span>
+						<!----first-span-end---------->
+						<form class="hide">
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control valid">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group date">
+									<input type="text" class="new-date form-control valid">
+									<span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="input-group date">
+									<input type="text" class="new-date form-control valid">
+									<span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<button type="submit" class="btn btn-success"><i class="fa fa-check"></i>  Save</button>
+								<button type="button" class="btn btn-danger"><i class="fa fa-times"></i>  Cancel</button>
+							</div>
+						</form>
+					</span>
+					<!----second-span-end---------->
+					<span class="hide">
+						<p>
+							<button data-toggle="tooltip" tooltip-placement="right" title="This will make the device highlighted red and make the last ended contract reappear as active. This will NOT change end-date of the contract made active!" class="btn btn-danger btn-xs"><i class="fa fa-undo"></i> Mark Unretrieved</button>
+						</p>
+						<h4>No active contract!</h4>
+						<button class="btn btn-success"><i class="fa fa-plus"></i>  Add</button>
+					</span>
+					<span *ngIf="historybutton">
+						<button type="button" class="btn btn-sm btn-primary" (click)="location_view('history')">history<i class="fa"
+								class="fa" [ngClass]="histClass"></i></button>
+						<div *ngIf="locationView=='history'" class="table-responsive">
+							<table class="table table-striped table-hover">
+								<thead>
+									<tr>
+										<th>Name</th>
+										<th>Start Date</th>
+										<th>End Date</th>
+										<th>Length</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="hide">
+										<td colspan="4">
+											<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+										</td>
+									</tr>
+									<tr class="scope" *ngFor="let hisrity of contractHist">
+										<td><strong>{{hisrity.name}}</strong></td>
+										<td>{{hisrity.start_date | countDays : 'dateType'}}</td>
+										<td>{{hisrity.end_date | countDays : 'dateType'}}</td>
+										<td>{{hisrity.start_date | countDays : 'getdiff' : 'wout':hisrity.end_date}}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</span>
+				</span>
+				<span class="hide">
+					<h4>New Contract</h4>
+					<div class="form-group">
+						<input type="text" class="form-control valid">
+					</div>
+					<div class="form-group">
+						<div class="input-daterange input-group">
+							<input name="start" class="form-control valid"><span class="input-group-addon">to</span>
+							<input name="end" class="form-control valid">
+						</div>
+					</div>
+					<div class="form-group">
+						<button class="btn btn-success"><i class="fa fa-check"></i> Create</button>
+						<button class="btn btn-danger"><i class="fa fa-times"></i> Cancel</button>
+					</div>
+				</span>
+			</div>
+			<!-----------panel-body-close---->
+		</div>
+		<!-----------panel-info-close---->
+		
+		<span *ngIf="device.coinbox_enabled">
+			<h3 class="counter-his-cu-b"><span class="cunt-text">Counter History:</span>
+				<button (click)="S_Counter(true)" class="btn btn-success history-service"><i class="fa fa-plus"></i>
+					New</button>
+				<div class="angular2-multiselectCustom2 count-ang-cu-select">
+					<angular2-multiselect [data]="headerList" [(ngModel)]="selectedheaderlist" [settings]="Settings"
+						(onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+						(onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+					</angular2-multiselect>
+				</div>
+			</h3>
+			<form *ngIf="multi_counter" class="well well-sm coun-his-custom">
+				<button (click)="S_Counter(false)" class="btn btn-danger btn-xs pull-right"><i class="fa fa-times"></i>
+					Close</button>
+				<h4 class="modal-title">Add new row</h4>
+				<ng-container *ngFor="let item of items;let i=index">
+					<div [ngClass]="device_variable_output(device.variable_output,device.uneven_output)">
+						<label>Counter {{i+1}} value</label>
+						<input [ngModel]="multipleCounts.counter_display"  (ngModelChange)="onChange($event,i,'Counter_value')" name="counter_display" class="form-control" required>
+					</div>
+					<div *ngIf="device.variable_output" [ngClass]="device_variable_output(device.variable_output,device.uneven_output)">
+						<label>Output</label>
+						<input [(ngModel)]="multipleCounts[i+1].output" (ngModelChange)="onChange($event,i,'output')" name="output" class="form-control" required>
+					</div>
+					<div *ngIf="device.uneven_output" class="form-group col-xs-12">
+						<label>Output counter display value</label>
+						<input [ngModel]="multipleCounts.output_display"  (ngModelChange)="onChange($event,i,'uneven_output')" name="output_display" class="form-control" required>
+					</div>
+				</ng-container>
+				<div class="form-group">
+					<button (click)="submitCounter()" [disabled]="!coinboxHide && !coinboxshow" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+					<label>Empty coinbox :</label>
+					<input type="radio" id="coinboxHide" name="coinbox"	 [(ngModel)]="coinboxHide" value="Hide" (ngModelChange)="onChangecoinbox($event)"/> Hide 
+					<input type="radio" id="coinboxshow" name="coinbox"	 [(ngModel)]="coinboxshow" value="Show" (ngModelChange)="onChangecoinbox($event)"/> Show
+				</div>
+			</form> 
+			
+			<form *ngIf="single_counter" class="well well-sm" class="well well-sm">
+				<h4 class="modal-title">Add new row</h4>
+				<div [ngClass]="device_variable_output(device.variable_output,device.uneven_output)">
+					<div><strong>Counter display Value</strong>
+						<input [(ngModel)]="multipleCounts.counter_display" name="counter_display" class="form-control" required="required">
+					</div>
+				</div>
+				<div *ngIf="device.variable_output" [ngClass]="device_variable_output(device.variable_output,device.uneven_output)">
+					<div><strong>Output</strong>
+						<input [(ngModel)]="multipleCounts.output"  class="form-control" name="output" required="required">
+					</div>
+				</div>
+				<div *ngIf="device.uneven_output" class="form-group col-xs-12">
+					<div><strong>Output counter display value</strong>
+						<input [(ngModel)]="multipleCounts.output_display" name="output_display"  class="form-control"  required="required">
+					</div>
+				</div>
+				<div class="form-group">
+					<button (click)="submitCounter()" [disabled]="!coinboxHide || !coinboxshow" class="btn btn-success"><i class="fa fa-check"></i> Save</button>
+					<button (click)="S_Counter(false)" class="btn btn-danger"><i class="fa fa-times"></i>
+						Close</button>
+					<label>Empty coinbox :</label>
+					<input type="radio" id="coinboxHide" name="coinbox"	 [(ngModel)]="coinboxHide" value="Hide" (ngModelChange)="onChangecoinbox($event)"> Hide 
+					<input type="radio" id="coinboxshow" name="coinbox"  [(ngModel)]="coinboxshow" value="Show" (ngModelChange)="onChangecoinbox($event)"> Show
+					<!-- <button (click)="actionEmptyCoinbox()" class="btn btn-warning empty-box">Empty Coinbox</button> -->
+				</div>
+			</form>
+			
+			<div *ngIf="tableshow('device_counter_count1')" class="table-responsive">
+				<table id="id_of_table" class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th *ngIf="tableshow('ID1')">Id</th>
+							<th *ngIf="tableshow('Counter Display1')">Counter Display</th>
+							<th *ngIf="tableshow('Counter Real1')">Counter Real</th>
+							<th *ngIf="tableshow('Counter Value1')">Counts value</th>
+							<th *ngIf="tableshow('Counter Counts Added1')">counts Added</th>
+							<th *ngIf="tableshow('Output Counter Display1')">Output counter display</th>
+							<th *ngIf="tableshow('Output Counter Real1')">Output counter Real</th>
+							<th *ngIf="tableshow('Output counts Added1')">Counter counts Added</th>
+							<th *ngIf="tableshow('User1')">User</th>
+							<th *ngIf="tableshow('Timestamp1')">Timestamp</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="scope" *ngFor="let count of counter;let i=index">
+							<td *ngIf="tableshow('ID1')">{{count.id}}</td>
+							<td *ngIf="tableshow('Counter Display1')">{{count.counter_display}}</td>
+							<td *ngIf="tableshow('Counter Real1')">{{count.counter_real}}</td>
+							<td *ngIf="tableshow('Counter Value1')">{{count.value}}</td>
+							<td *ngIf="tableshow('Counter Counts Added1')">{{calcCountsAdded(i, count, null)}}</td>
+							<td *ngIf="tableshow('Output Counter Display1')">{{count.output_display}}</td>
+							<td *ngIf="tableshow('Output Counter Real1')">{{count.output_real}}</td>
+							<td *ngIf="tableshow('Output counts Added1')">{{calcOutputsAdded(i, count, null)}}</td>
+							<td *ngIf="tableshow('User1')"><span class="label label-primary ">@{{count.user}}</span></td>
+							<td *ngIf="tableshow('Timestamp1')">{{count.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+							<td *ngIf="role"><a (click)="deleteCounterRow(count.id)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a></td>
+							<td *ngIf="count.coinboxSH == 'Show'"><fa-icon class="text-warning" [icon]="faCoins"></fa-icon></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div *ngIf="tableshow('device_counter_count2')" class="table-responsive">
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th *ngIf="tableshow('ID')">ID</th>
+							<ng-container *ngFor="let item of items;let i=index">
+								<th *ngIf="tableshow('Counter Display')">Counter{{i + 1}} Display</th>
+								<th *ngIf="tableshow('Counter Real')">Counter {{i + 1}} Real</th>
+								<th *ngIf="tableshow('Counter Value')">Counter {{i + 1}} Value</th>
+								<th *ngIf="tableshow('Counter Output')">Counter {{i + 1}} Output</th>
+								<th *ngIf="tableshow('Counter Counts Added')">Counter {{i + 1}} Added</th>
+								<th *ngIf="tableshow('Output Counter Display')">Output {{i + 1}} Display</th>
+								<th *ngIf="tableshow('Output Counter Real')">Output {{i + 1}} Real</th>
+								<th *ngIf="tableshow('Output Counts Added')">Outputs {{i + 1}} Added</th>
+							</ng-container>
+							<th *ngIf="tableshow('Counter Real Sum')">Counter Sum</th>
+							<th *ngIf="tableshow('Counter Value Sum')">Value Sum</th>
+							<th *ngIf="tableshow('Counter Added Sum')">Counter Added Sum</th>
+							<th *ngIf="tableshow('Output Counts Sum')">Output Sum</th>
+							<th *ngIf="tableshow('Output Counts Added Sum')">Output Added Sum</th>
+							<th *ngIf="tableshow('User')">User</th>
+							<th *ngIf="tableshow('Timestamp')">Timestamp</th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let count of counter;let i=index">
+							<td *ngIf="tableshow('ID')">{{count.id}}</td>
+							<ng-container *ngFor="let item of items;let j=index">
+								<td *ngIf="tableshow('Counter Display')">{{count.children.length > 0 ?count.children[j].counter_display:empty}}</td>
+								<td *ngIf="tableshow('Counter Real')">{{count.children.length > 0?count.children[j].counter_real:empty}}</td>
+								<td *ngIf="tableshow('Counter Value')">{{count.children.length > 0?divide(count.children[j].counter_real, device.counter_divisor):empty}}</td>
+								<td *ngIf="tableshow('Counter Output')">{{count.children.length > 0?count.children[j].output:empty}}</td>
+								<td *ngIf="tableshow('Counter Counts Added')">{{count.children.length > 0?calcCountsAdded(j, count, count.children[j].counter_label):empty}}</td>
+								<td *ngIf="tableshow('Output Counter Display')">{{count.children.length > 0?count.children[j].output_display:empty}}</td>
+								<td *ngIf="tableshow('Output Counter Real')">{{count.children.length > 0?count.children[j].output_real:empty}}</td>
+								<td *ngIf="tableshow('Output Counts Added')">{{count.children.length > 0?calcOutputsAdded(j, row, row.children[j].counter_label):empty}}</td>
+							</ng-container>
+							<td *ngIf="tableshow('Counter Real Sum')"><strong>{{count.counter_real}}</strong></td>
+							<td *ngIf="tableshow('Counter Value Sum')"><strong>{{divide(count.counter_real, device.counter_divisor)}}</strong></td>
+							<td *ngIf="tableshow('Counter Added Sum')"><strong>{{calcCountsAdded(i, count, null)}}</strong></td>
+							<td *ngIf="tableshow('Output Counts Sum')">{{count.output_real}}</td>
+							<td *ngIf="tableshow('Output Counts Added Sum')">{{calcOutputsAdded(i, count, null)}}</td>
+							<td *ngIf="tableshow('User')"><span class="label label-primary">@{{count.user}}</span></td>
+							<td *ngIf="tableshow('Timestamp')">{{count.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+							<td *ngIf="role"><a (click)="deleteCounterRow(count.id)" class="btn btn-danger btn-xs"><i class="fa fa-trash"></i></a></td>
+							<td *ngIf="checkcoinboxSH(count,i)"><fa-icon class="text-warning" [icon]="faCoins"></fa-icon></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</span>
+		<h3>Service History:
+			<button (click)="addService()" class="btn btn-danger history-service">Service</button>
+		</h3>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Type</th>
+						<th>Message</th>
+						<th>User</th>
+						<th>Timestamp</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="hide">
+						<td colspan="5">
+							<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+						</td>
+					</tr>
+					<tr class="scope" *ngFor="let service of services">
+						<td>{{service.id}}</td>
+						<td>{{service.type}}</td>
+						<td>{{service.message}}</td>
+						<td><span class="label label-primary ">@{{service.user}}</span></td>
+						<td>{{service.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss'  }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-----------service-history-close---->
+		<h3>Open Issues:
+			<button (click)="addIssue()" class="btn btn-info new-find-issue">New Issue</button>
+			<form >
+				<p style="display:none;" class="file-up-cu-outer"><span class="cust-tab-w-label"><strong>Upload contract file:</strong></span>
+					<span class="cust-tab-w-wid"><span class="file-text-up">{{Upload_contract_file}}</span>
+					<span class="file-holder-cus"><input type="file" id="upload_file" name="avatar" (change)="onFileSelect($event)" />
+					<button class="btn btn-sm btn-success" type="submit"><i class="fa fa-dashboard"></i>Upload</button></span></span>
+				</p>
+			</form>
+		</h3>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Severity</th>
+						<th>Message</th>
+						<th>Reported By</th>
+						<th>Status</th>
+						<th>Image/Video</th>
+						<th>Timestamp</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="hide">
+						<td colspan="7">
+							<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+						</td>
+					</tr>
+					<tr class="scope" *ngFor="let open of issueOpen">
+						<td>{{open.id}}</td>
+						<td>
+							<span *ngIf="issueEditing !== open.id" [ngClass]="highlightSeverity(open.severity)">{{open.severity}}</span>
+							<div  *ngIf="issueEditing == open.id" class="nomargin form-group">
+								<select name="severity" [(ngModel)]="editedIssue.severity" class="form-control input-sm">
+									<option>critical</option>
+									<option>major</option>
+									<option>minor</option>
+									<option>cosmetic</option>
+								</select>
+							</div>
+						</td>
+						<td><span *ngIf="issueEditing !== open.id">{{open.message}}</span>
+							<div *ngIf="issueEditing == open.id" class="nomargin form-group">
+								<input name="message" type="text" [(ngModel)]="editedIssue.message" class="form-control input-sm">
+							</div>
+						</td>
+						<td><span class="label label-primary ">@{{open.user}}</span></td>
+						<td><span [ngClass]="highlightStatus(open.status)">{{open.status}}</span></td>
+						<td>
+							<img *ngIf="open.issue_image" src="{{open.issue_image}}" width="50px;" height="20px;">
+							<form [formGroup]="imgVal" (ngSubmit)="helloDev()">
+								<p class="file-up-cu-outer"><span class="cust-tab-w-label"><strong>Upload contract file:</strong></span>
+									<span class="cust-tab-w-wid">
+										<span class="file-holder-cus">
+											<input type="file" name="issue_image" (change)="onFile_Select($event,open.id)" />											
+											<button class="btn btn-sm btn-success" type="submit"><i class="fa fa-dashboard"></i>Upload</button>
+										</span>
+									</span>
+								</p>
+							</form>
+						</td>
+						<td>{{open.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+						<td>
+							<span *ngIf="issueEditing !== open.id">
+								<button (click)='markAsClosed(open)' class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
+								<button (click)="editIssue(open)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button>
+							</span>
+							<span *ngIf="issueEditing == open.id">
+								<button (click)="saveIssue(open)" class="btn btn-success btn-xs"><i   class="fa fa-save"></i></button>
+								<button (click)="issueEditing = -1" class="btn btn-danger btn-xs"><i class="fa fa-reply"></i></button>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-----------new-issue-table-close---->
+		<h3>Closed Issues:</h3>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Severity</th>
+						<th>Message</th>
+						<th>Reported By</th>
+						<th>Status</th>
+						<th>Timestamp</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="hide">
+						<td colspan="7">
+							<div class="loading"><i class="fa fa-spinner fa-pulse fa-2x"></i></div>
+						</td>
+					</tr>
+					<tr class="scope" *ngFor="let close of issueClosed">
+						<td>{{close.id}}</td>
+						<td><span [ngClass]="highlightSeverity(close.severity)">{{close.severity}}</span></td>
+						<td>{{close.message}}</td>
+						<td><span class="label label-primary">@{{close.user}}</span></td>
+						<td><span [ngClass]="highlightStatus(close.status)">{{close.status}}</span></td>
+						<td>{{close.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+						<td>
+							<button *ngIf="close.status == 'closed'" (click)="markAsOpen(close)" class="btn btn-danger btn-xs"><i class="fa fa-unlock"></i></button>
+							<button *ngIf="close.status == 'open'" class="btn btn-warning btn-xs"><i class="fa fa-lock"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-----------closed-issue-table-close---->
+		<div *ngIf="!keyCheck" class="well well-sm "><strong>Key Number:</strong> {{device.key}}
+			<button (click)="keyVal()" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i>  Edit</button>
+		</div> 
+		<div *ngIf="keyCheck" class="well well-sm">
+			<form class="valid" novalidate>
+				<div class="form-group">
+					<input type="text" [(ngModel)]="key" name="key" class="form-control">
+				</div>
+				<div class="form-group">
+					<button (click)="keyUpdate()" class="btn btn-success"><i class="fa fa-check"></i>  Save</button>
+					<button (click)="keyVal()" type="button" class="btn btn-danger"><i class="fa fa-times"></i>  Cancel</button>
+				</div>
+			</form>
+		</div>
+		<button (click)="setRedirect(viewId,'settings')" class="btn btn-default"><i class="fa fa-gear"></i>  Settings</button>
+	</div>
+	<!------------device-conatiner-end----------->
+</div>
+<!------------conatiner-end----------->
+<app-footer-component></app-footer-component>

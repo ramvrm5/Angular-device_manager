@@ -1,0 +1,38 @@
+<app-header-component></app-header-component>
+<div class="container content ng-scope">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Recent Activity:</h1>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Type</th>
+					<th>Device</th>
+					<th>Activity</th>
+					<th>Username</th>
+					<th>Timestamp</th>
+				</tr>
+			</thead>
+			<tr>
+				<td></td>
+				<td><input [(ngModel)]="type" type="text" placeholder="Search" class="input-sm form-control"></td>
+				<td><input [(ngModel)]="target_device" type="text" placeholder="Search" class="input-sm form-control"></td>
+				<td><input [(ngModel)]="description" type="text" placeholder="Search" class="input-sm form-control"></td>
+				<td><input [(ngModel)]="username" type="text" placeholder="Search" class="input-sm form-control"></td>
+				<td></td>
+			</tr>
+			<tbody>
+				<tr *ngFor="let act of actvities | filter :type |filter :target_device|  filter :description|  filter :username| grdFilter: {type:type, target_device:target_device, description:description, username:username}; let i=index;">
+					<td>{{act.id}}</td>
+					<td class="smaller-font">{{act.type}}</td>
+					<td><a [routerLink]="['/devices/',act.target_device]">{{act.target_device}}</a></td>
+					<td>{{act.description}}</td>
+					<td><span class="label label-primary">@{{act.username}}</span></td>
+					<td class="smaller-font">{{act.created_at | date:'hh:mm dd.MM.yy'}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

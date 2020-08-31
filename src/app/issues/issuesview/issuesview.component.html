@@ -1,0 +1,231 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Open Issues: <button (click)="refresh()" class="btn btn-info"><i class="fa fa-refresh"></i>Refresh</button>
+	</h1>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover page-issue angu-page-issue">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Severity</th>
+					<th>Message</th>
+					<th>Reported By</th>
+					<th>Status</th>
+					<th>Timestamp</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody *ngFor="let critcalIssue of critical">
+				<tr *ngIf="critcalIssue.status=='open'">
+					<td>{{critcalIssue.id}}</td>
+					<td> 
+						<span *ngIf="editVal != critcalIssue.id" class="label label-danger">{{critcalIssue.severity}}</span>
+						<select *ngIf="editVal == critcalIssue.id">
+							<option value="critical">Critical</option>
+							<option value="major">Major</option>
+							<option value="minor">Minor</option>
+							<option value="cosmetic">Cosmetic</option>
+						</select>
+					</td>
+					<td>
+						<span *ngIf="editVal != critcalIssue.id">{{critcalIssue.message}}</span>
+						<span *ngIf="editVal == critcalIssue.id"><input style="width: 100%;" type="text" value="{{critcalIssue.message}}"></span>
+					</td>
+					<td><span class="label label-primary ">@{{critcalIssue.user}}</span></td>
+					<td><span class="label label-danger">{{critcalIssue.status}}</span></td>
+					<td>{{critcalIssue.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss'  }}</td>
+					<td>
+						<span>
+							<span *ngIf="editVal != critcalIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
+								<button (click)="editDetails(critcalIssue.id,critcalIssue.device)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button>
+							</span>
+							<span *ngIf="editVal == critcalIssue.id">
+								<button (click)="updateIssue()" class="btn btn-success btn-xs"><i class="fa fa-save"></i></button>
+								<button (click)="editDetails(-1,'')" class="btn btn-danger btn-xs"><i class="fa fa-reply"></i></button>
+							</span>
+						</span>
+						<span>
+							<button class="btn btn-danger btn-xs ng-hide"><i class="fa fa-unlock"></i></button>
+							<!-- <button class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button> -->
+						</span>
+						<button *ngIf="expands != critcalIssue.id" (click)="showDetails(critcalIssue.id,critcalIssue.device)" class="btn btn-info btn-xs"><i class="fa fa-chevron-down"></i> Expand</button>
+						<button *ngIf="expands == critcalIssue.id" (click)="showDetails(-1,'')" class="btn btn-info btn-xs"><i class="fa fa-chevron-up"></i> Reduce</button>
+					</td>
+				</tr>
+				<tr *ngIf="expands==critcalIssue.id"  class="active">
+					<td colspan="7">
+						<h3>{{device.type}}: {{device.name}}</h3>
+						<h6>{{device.code}}</h6>
+						<p><strong>Location:</strong> {{device.location}}</p>
+						<p><strong>Contract:</strong>
+							<span *ngIf="device.contract!=null">{{device.contract.name}} ({{device.contract.end_date | countDays : 'getdiff' }})</span>
+							<span *ngIf="!device.contract" class="text-muted">None</span>
+						</p>
+						<p><span [ngClass]="highlightDevice(device.status)">{{device.status}}</span></p>
+						<a class="btn btn-primary" [routerLink]="['/devices/',critcalIssue.device]"><i class="fa fa-chevron-right"></i> Go to device</a>
+					</td>
+				</tr>
+			</tbody>
+			<tbody *ngFor="let majorIssue of major">
+				<tr *ngIf="majorIssue.status=='open'">
+					<td>{{majorIssue.id}}</td>
+					<td>
+						<span *ngIf="editVal != majorIssue.id" class="label label-warning">{{majorIssue.severity}}</span>
+						<select (change)="upda($event,majorIssue.device)" *ngIf="editVal == majorIssue.id">
+							<option value="critical">Critical</option>
+							<option value="major">Major</option>
+							<option value="minor">Minor</option>
+							<option value="cosmetic">Cosmetic</option>
+						</select>
+					</td>
+					<td>
+						<span *ngIf="editVal != majorIssue.id">{{majorIssue.message}}</span>
+						<span *ngIf="editVal == majorIssue.id"><input style="width: 100%;" type="text" value="{{majorIssue.message}}"></span>
+					</td>
+					<td><span class="label label-primary ">@{{majorIssue.user}}</span></td>
+					<td><span class="label label-danger">{{majorIssue.status}}</span></td>
+					<td>{{majorIssue.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss'}}</td>
+					<td>
+						<span>
+							<span *ngIf="editVal != majorIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
+								<button (click)="editDetails(majorIssue.id,majorIssue.device)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button>
+							</span>
+							<span *ngIf="editVal == majorIssue.id">
+								<button (click)="updateIssue()" class="btn btn-success btn-xs"><i class="fa fa-save"></i></button>
+								<button (click)="editDetails(-1,'')" class="btn btn-danger btn-xs"><i class="fa fa-reply"></i></button>
+							</span>
+						</span>
+						<span>
+							<button class="btn btn-danger btn-xs ng-hide"><i class="fa fa-unlock"></i></button>
+							<!-- <button class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button> -->
+						</span>
+						<button *ngIf="expands != majorIssue.id" (click)="showDetails(majorIssue.id,majorIssue.device)" class="btn btn-info btn-xs"><i class="fa fa-chevron-down"></i> Expand</button>
+						<button *ngIf="expands == majorIssue.id" (click)="showDetails(-1,'')" class="btn btn-info btn-xs"><i class="fa fa-chevron-up"></i> Reduce</button>
+					</td>
+				</tr>
+				<tr *ngIf="expands==majorIssue.id" class="active">
+					<td colspan="7">
+						<h3>{{device.type}}: {{device.name}}</h3>
+						<h6>{{device.code}}</h6>
+						<p><strong>Location:</strong> {{device.location}}</p>
+						<p><strong>Contract:</strong>
+							<span *ngIf="device.contract!=null">{{device.contract.name}} ({{device.contract.end_date | countDays : 'getdiff' }})</span>
+							<span *ngIf="device.contract==null" class="text-muted">None</span>
+						</p>
+						<p><span [ngClass]="highlightDevice(device.status)">{{device.status}}</span></p>
+						<a class="btn btn-primary" [routerLink]="['/devices/',majorIssue.device]"><i class="fa fa-chevron-right"></i> Go to device</a>
+					</td>
+				</tr>
+			</tbody>
+			<tbody *ngFor="let minorIssue of minor">
+				<tr *ngIf="minorIssue.status=='open'">
+					<td>{{minorIssue.id}}</td>
+					<td>
+						<span *ngIf="editVal != minorIssue.id" class="label label-info">{{minorIssue.severity}}</span>
+						<select *ngIf="editVal == minorIssue.id">
+							<option value="critical">Critical</option>
+							<option value="major">Major</option>
+							<option value="minor">Minor</option>
+							<option value="cosmetic">Cosmetic</option>
+						</select>
+					</td>
+					<td>
+						<span *ngIf="editVal != minorIssue.id">{{minorIssue.message}}</span>
+						<span *ngIf="editVal == minorIssue.id"><input style="width: 100%;" type="text" value="{{minorIssue.message}}"></span>
+					</td>
+					<td><span class="label label-primary ">@{{minorIssue.user}}</span></td>
+					<td><span class="label label-danger">{{minorIssue.status}}</span></td>
+					<td>{{minorIssue.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+					<td>
+						<span>
+							<span *ngIf="editVal != minorIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
+								<button (click)="editDetails(minorIssue.id,minorIssue.device)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button>
+							</span>
+							<span *ngIf="editVal == minorIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-save"></i></button>
+								<button (click)="editDetails(-1,'')" class="btn btn-danger btn-xs"><i class="fa fa-reply"></i></button>
+							</span>
+						</span>
+						<span>
+							<button class="btn btn-danger btn-xs ng-hide"><i class="fa fa-unlock"></i></button>
+							<!-- <button class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button> -->
+						</span>
+						<button *ngIf="expands != minorIssue.id" (click)="showDetails(minorIssue.id,minorIssue.device)" class="btn btn-info btn-xs"><i class="fa fa-chevron-down"></i> Expand</button>
+						<button *ngIf="expands == minorIssue.id" (click)="showDetails(-1,'')" class="btn btn-info btn-xs"><i class="fa fa-chevron-up"></i> Reduce</button>
+					</td>
+				</tr>
+				<tr *ngIf="expands==minorIssue.id" class="active">
+					<td colspan="7">
+						<h3>{{device.type}}: {{device.name}}</h3>
+						<h6>{{device.code}}</h6>
+						<p><strong>Location:</strong> {{device.location}}</p>
+						<p><strong>Contract:</strong>
+							<span *ngIf="device.contract!=null">{{device.contract.name}} ({{device.contract.end_date | countDays : 'getdiff' }})</span>
+							<span *ngIf="device.contract==null" class="text-muted">None</span>
+						</p>
+						<p><span [ngClass]="highlightDevice(device.status)">{{device.status}}</span></p>
+						<a class="btn btn-primary" [routerLink]="['/devices/',minorIssue.device]"><i class="fa fa-chevron-right"></i> Go to device</a>
+					</td>
+				</tr>
+			</tbody>
+			<tbody *ngFor="let cosmIssue of cosmetics">
+				<tr *ngIf="cosmIssue.status=='open'">
+					<td>{{cosmIssue.id}}</td>
+					<td>
+						<span *ngIf="editVal != cosmIssue.id" class="label label-success">{{cosmIssue.severity}}</span>
+						<select *ngIf="editVal == cosmIssue.id">
+							<option value="critical">Critical</option>
+							<option value="major">Major</option>
+							<option value="minor">Minor</option>
+							<option value="cosmetic">Cosmetic</option>
+						</select>
+					</td>
+					<td>
+						<span *ngIf="editVal != cosmIssue.id">{{cosmIssue.message}}</span>
+						<span *ngIf="editVal == cosmIssue.id"><input style="width: 100%;" type="text" value="{{cosmIssue.message}}"></span>
+					</td>
+					<td><span class="label label-primary ">@{{cosmIssue.user}}</span></td>
+					<td><span class="label label-danger">{{cosmIssue.status}}</span></td>
+					<td>{{cosmIssue.updated_at | countDays : 'custdate':'dd, DD.MM.YYYY HH:ss' }}</td>
+					<td>
+						<span>
+							<span *ngIf="editVal != cosmIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-check"></i></button>
+								<button (click)="editDetails(cosmIssue.id,cosmIssue.device)" class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button>
+							</span>
+							<span *ngIf="editVal == cosmIssue.id">
+								<button class="btn btn-success btn-xs"><i class="fa fa-save"></i></button>
+								<button (click)="editDetails(-1,'')" class="btn btn-danger btn-xs"><i class="fa fa-reply"></i></button>
+							</span>
+						</span>
+						<span>
+							<button class="btn btn-danger btn-xs ng-hide"><i class="fa fa-unlock"></i></button>
+							<!-- <button class="btn btn-warning btn-xs"><i class="fa fa-edit"></i></button> -->
+						</span>
+						<button *ngIf="expands != cosmIssue.id" (click)="showDetails(cosmIssue.id,cosmIssue.device)" class="btn btn-info btn-xs"><i class="fa fa-chevron-down"></i> Expand</button>
+						<button *ngIf="expands == cosmIssue.id" (click)="showDetails(-1,'')" class="btn btn-info btn-xs"><i class="fa fa-chevron-up"></i> Reduce</button>
+					</td>
+				</tr>
+
+				<tr *ngIf="expands==cosmIssue.id" class="active">
+					<td colspan="7">
+						<h3>{{device.type}}: {{device.name}}</h3>
+						<h6>{{device.code}}</h6>
+						<p><strong>Location:</strong> {{device.location}}</p>
+						<p><strong>Contract:</strong>
+							<span *ngIf="device.contract!=null">{{device.contract.name}} ({{device.contract.end_date | countDays : 'getdiff' }})</span>
+							<span *ngIf="device.contract==null" class="text-muted">None</span>
+						</p>
+						<p><span [ngClass]="highlightDevice(device.status)">{{device.status}}</span></p>
+						<a class="btn btn-primary" [routerLink]="['/devices/',cosmIssue.device]"><i class="fa fa-chevron-right"></i> Go to device</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

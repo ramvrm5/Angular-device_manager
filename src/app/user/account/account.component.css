@@ -1,0 +1,54 @@
+ .account-angular-custom .well h4 i.fa-envelope {
+    padding-right: 5px;
+}
+.account-angular-custom .well h4 i.fa-slack {
+    padding-right: 5px;
+}
+.account-angular-custom .well h4 strong {
+    margin-right: 5px;
+    min-width: 70px;
+    display: inline-block;
+}
+.levelabout-acco h4 span>span {
+    padding-right: 5px;
+    font-size: 17px;
+}
+
+.levelabout-acco button.btn {
+    margin-right: 10px;
+}
+
+@media only screen and (max-width:479px){
+
+	.levelabout-acco h4 {
+	    font-size: 17px;
+	}
+
+	.account-angular-custom .well h4 strong {
+	    min-width: 60px;
+	  
+	}
+
+	.levelabout-acco h4 span>span {
+	    font-size: 16px;
+	}
+
+	.account-angular-custom form.well.well-sm {
+	    padding-left: 0;
+	    padding-right: 0;
+	}
+
+}
+
+@media only screen and (max-width:400px){
+
+	.levelabout-acco h4>span {
+	    display: block;
+	    padding-top: 10px;
+	}
+
+	.levelabout-acco h4 {
+	    margin-top: 18px;
+	}
+
+}

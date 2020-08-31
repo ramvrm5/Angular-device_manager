@@ -1,0 +1,196 @@
+<app-header-component></app-header-component>
+<div class="container-fluid content">
+		<button (click)="exportAsXLSX()" class="download-btn"><i class="fa fa-file-excel-o"
+				style="font-size:48px;color:blue"></i>Download</button>
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Devices:
+		<button *ngIf="tooltip" data-toggle="tooltip" data-placement="bottom" class="btn btn-primary button-dark"
+			title="It might happen, that no coounter values have been recorded in selected timeframe. These devices will have counts displayed as N/A">Hide
+			N/A</button>
+		<button *ngIf="!tooltip" class="btn btn-primary button-dark">Show N/A</button>
+	</h1>
+	<h2>Period:</h2>
+	<ul class="nav nav-tabs tabss-custom">
+		<li>
+			<button (click)="periodShow('monthly')" [ngClass]="{'active': periodType=='monthly'}"
+				class="btn btn-default button-dark">Monthly</button>
+		</li>
+		<li>
+			<button (click)="periodShow('quarterly')" [ngClass]="{'active': periodType=='quarterly'}"
+				class="btn btn-default button-dark">Quaterly</button>
+		</li>
+		<li>
+			<button (click)="periodShow('yearly')" [ngClass]="{'active': periodType=='yearly'}"
+				class="btn btn-default button-dark">Yearly</button>
+		</li>
+		<li>
+			<button (click)="periodShow('custom')" [ngClass]="{'active': periodType=='custom'}"
+				class="btn btn-default button-dark">Custom</button>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div *ngIf ="periodType=='monthly'">
+			<form [formGroup]="monthForm">
+				<div class="form-group col-xs-6">
+					<label>Year</label>
+					<input formControlName="month_val1" (input)="monthChange()" type="number" class="form-control">
+				</div>
+				<div class="form-group col-xs-6">
+					<label>Month</label>
+					<select formControlName="month_val2" (change)="monthChange()" class="form-control">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+					</select>
+				</div>
+			</form>
+		</div>
+		<div *ngIf="periodType=='quarterly'">
+			<form [formGroup]="quaterForm">
+				<div class="form-group col-xs-6">
+					<label>Year</label>
+					<input formControlName="quat_val1" (input)="qauterChange()" type="number" class="form-control"
+						value="2019">
+				</div>
+				<div class="form-group col-xs-6">
+					<label>Quarter</label>
+					<select formControlName="quat_val2" (change)="qauterChange()" class="form-control">
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+				</div>
+			</form>
+		</div>
+		<div *ngIf="periodType=='yearly'">
+			<form [formGroup]="yearlyForm">
+				<div class="form-group col-xs-12">
+					<label>Year</label>
+					<input formControlName="year_val1" (input)="yearChange()" type="number" class="form-control">
+				</div>
+			</form>
+		</div>
+
+		<div *ngIf="periodType=='custom'">
+			<form>
+				<div class="form-group col-xs-6 cu-angular-date">
+					<label>Start</label>
+					<div class='input-group date'>
+						<mat-form-field>
+							<input matInput [matDatepicker]="picker1" (dateInput)="startEvent($event)"
+								(dateChange)="startEvent($event)" [(ngModel)]="startDate"
+								[ngModelOptions]="{standalone: true}">
+							<mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+							<mat-datepicker #picker1 disabled="false"></mat-datepicker>
+						</mat-form-field>
+					</div>
+				</div>
+				<div class="form-group col-xs-6 cu-angular-date">
+					<label>End</label>
+					<div class='input-group date'>
+						<mat-form-field>
+							<input matInput [matDatepicker]="picker2" (dateInput)="endEvent($event)"
+								(dateChange)="endEvent($event)" [(ngModel)]="endDate"
+								[ngModelOptions]="{standalone: true}">
+							<mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+							<mat-datepicker #picker2 disabled="false"></mat-datepicker>
+						</mat-form-field>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="table-responsive sta-tables-cu-an">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>S.No</th>
+					<th>Code</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Region</th>
+					<th>Location</th>
+					<th>Rent</th>
+					<th>Counts</th>
+					<th>Value</th>
+					<th>Period Start</th>
+					<th>Period End</th>
+					<th>Days</th>
+					<th>Calculated Counts</th>
+					<th>Calculated Value</th>
+					<th>Work Efficency</th>
+					<th>Value/Rent Ratio</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+					<td><input type="text" name="searchcode" [(ngModel)]="searchcode" placeholder="Search"
+							class="input-sm form-control"></td>
+					<td><input type="text" name="searchname" [(ngModel)]="searchname" placeholder="Search"
+							class="input-sm form-control"></td>
+					<td><input type="text" name="searchtype" [(ngModel)]="searchtype" placeholder="Search"
+							class="input-sm form-control"></td>
+					<td><input type="text" name="searchregion" [(ngModel)]="searchregion" placeholder="Search"
+							class="input-sm form-control"></td>
+					<td><input type="text" name="searchlocation" [(ngModel)]="searchlocation" placeholder="Search"
+							class="input-sm form-control"></td>
+					<td colspan="99"></td>
+				</tr>
+				<tr *ngFor="let stats of statData | personSearch: searchcode:searchname:searchtype:searchregion:searchlocation; let i=index;">
+					<td>{{i+1}}</td>
+					<td><a [routerLink]="['/devices/',stats.device.code]">{{stats.device.code}}</a></td>
+					<td>{{stats.device.name}}</td>
+					<td>{{stats.device.type}}</td>
+					<td>{{stats.device.region}}</td>
+					<td>{{stats.device.location}}</td>
+					<td>{{stats.device.pay_for_rent}}</td>
+					<td>{{stats.counts}}</td>
+					<td *ngIf="stats.value!='N/A'">{{stats.value | number : '1.2-2'}}</td>
+					<td *ngIf="stats.value=='N/A'">{{stats.value}}</td>
+					<td>{{stats.period.start.date | countDays : 'custdate':'DD.MM.YY'}}</td>
+					<td>{{stats.period.end.date | countDays : 'custdate':'DD.MM.YY'}}</td>
+					<td>{{(stats.period.start.date | countDays : 'getdiff' : 'wout': stats.period.end.date).replace(' days', '') }}</td>
+					<td>{{calculatePeriodAvg(stats, 'counts') | number : '1.2-2'}}</td>
+					<td *ngIf="!stats.device.pay_for_rent">{{calculatePeriodAvg(stats, 'value') | number : '1.2-2'}}</td>
+					<td *ngIf="!stats.device.pay_for_rent">{{calculatePeriodAvg(stats, 'value') | number : '1.2-2'}}</td>
+					<td *ngIf="stats.device.pay_for_rent">{{calculatePeriodAvg(stats, 'value') - getRentPrice(stats.device) | number : '1.2-2'}}
+						<small	class="text-muted">({{calculatePeriodAvg(stats, 'value') | number : '1.2-2'}})</small>
+					</td>
+					<td *ngIf="stats.device.pay_for_rent">{{calrent(calculatePeriodAvg(stats, 'value'),stats.device.pay_for_rent) | number : '1.2-2'}}</td>
+					<td *ngIf="stats.device.pay_for_rent">{{getRowRatio(stats) | number : '1.2-4'}}</td>
+				</tr>
+				<tr>
+					<td>Total</td>
+					<td>{{statData?.length > 0 ? statData.length : 0}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>{{TotalRent}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>{{TotalCounts | number : '1.2-2'}}</td>
+					<td>{{TotalValue | number : '1.2-2'}}</td>
+					<td>{{Totalefficiency | number : '1.2-2'}}</td>
+					<td></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<app-footer-component></app-footer-component>

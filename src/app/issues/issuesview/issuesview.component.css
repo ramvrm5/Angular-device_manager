@@ -1,0 +1,7 @@
+@media screen and (max-width: 767px){
+.table-responsive>.table.angu-page-issue>tbody>tr>td, .table-responsive>.table.angu-page-issue>tbody>tr>th, 
+.table-responsive>.table.angu-page-issue>tfoot>tr>td, .table-responsive>.table.angu-page-issue>tfoot>tr>th, 
+.table-responsive>.table.angu-page-issue>thead>tr>td, .table-responsive>.table.angu-page-issue>thead>tr>th {
+    white-space: normal;
+}
+}

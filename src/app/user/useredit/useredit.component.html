@@ -1,0 +1,38 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<div class="table-responsive use-edit-ang-cu">
+		<form [formGroup]="updateForm" class="well well-sm" (ngSubmit)="updateuser(updateForm.value)">
+			<div class="form-group">
+				<span>Email:</span>
+				<input type="text" formControlName="email" placeholder="E-Mail" class="form-control">
+			</div>
+			<div class="form-group">
+				<span>Slack:</span>
+				<input type="text" formControlName="slack" placeholder="slack" class="form-control">
+			</div>
+			<div class="form-group">
+				<span>Region:</span>
+				<select formControlName="region" class="form-control">
+					<option *ngFor="let region of regions" value="{{region.region_name}}">{{region.region_name}}</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<span>Location:</span>
+				<input type="text" formControlName="location" placeholder="location" class="form-control">
+			</div>
+			<div *ngIf="role=='superadmin' || role=='admin'" class="form-group">
+				<span>Role:</span>
+				<select formControlName="role" class="form-control">
+					<option value="user">User</option>
+					<option value="admin">Admin</option>
+				</select>
+			</div>
+			<div class="form-group">
+				<button [disabled]="!updateForm.valid" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Save</button>
+				<button (click)="return()" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

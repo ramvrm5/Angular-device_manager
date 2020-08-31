@@ -1,0 +1,35 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 *ngIf="role=='admin' || role=='superadmin'" class="page-title">Locations: 
+		<button *ngIf="role=='admin' || role=='superadmin'" (click)="newlocation()" class="btn btn-success new-user"><i class="fa fa-plus"></i> New Location</button>
+	</h1>
+	<div class="table-responsive">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Sr No.</th>
+					<th>Location Name</th>
+					<th *ngIf="role=='admin' || role=='superadmin'"></th>
+				</tr>
+			</thead>
+			
+			<tr>
+				<td></td>
+				<td><input [(ngModel)]="location" type="text" placeholder="Search" class="input-sm form-control"></td>
+				<td *ngIf="role=='admin' || role=='superadmin'"></td>
+			</tr>
+			<tbody *ngFor="let location of locations | filter : location; let i=index;">
+				<tr class="ng-scope">
+					<td class="ng-binding">{{i+1}}</td>
+					<td class="ng-binding">{{location.location_name}}</td>
+					<td *ngIf="role=='admin' || role=='superadmin'">
+						<!--a (click)="editlocation(location.id)" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></a-->
+						<a (click)="delete(location.id)" class="btn btn-danger btn-xs"><i class="fa fa-trash" aria-hidden="true"></i></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

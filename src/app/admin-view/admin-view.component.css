@@ -1,0 +1,38 @@
+
+.angular2-multiselectCustom{
+    width: 100%;
+    min-height: 4.8%;
+    background-color: inherit;
+    border-radius: 4px;
+    border: 2px solid #dce4ec !important;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075) !important;
+}
+
+.custom-class-example{
+    font-size: 14px;
+}
+
+.custom-class-example .selected-list .c-btn {
+    color: #555 !important;
+}
+
+.input-group.date {
+    margin-bottom: 10px;
+}
+
+.angular2-multiselectCustom .custom-class-example .c-btn{color: #555 !important;}
+
+.table-responsive {
+    margin-top: 20px;
+}
+
+.form-group input.form-control[type="text"] {
+    height: 42px;
+}
+
+.admin-vie-tab-cu {
+    clear: both;
+}
+
+button.download-btn.down-su{margin: 20px 0;}
+

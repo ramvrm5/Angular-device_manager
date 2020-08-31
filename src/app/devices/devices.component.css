@@ -1,0 +1,187 @@
+.angular2-multiselectCustom{
+width: 11%;
+    min-height: 4.8%;
+    position: relative;
+    top: 0;
+    left: 0;
+    background-color: #b1b1b1;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 10px;
+
+}
+
+.custom-class-example{
+    font-size: 14px;
+}
+.custom-class-NotificationSettings{
+    font-size: 14px;
+}
+
+.colourfilter {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: auto;
+    font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+}
+td.status {
+    position: absolute; 
+}
+.device-page-custom-ang div.search{
+    width: 25%;
+    position: relative;
+    top: 0;
+    left: 0;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 55px;
+}
+
+.ang-search-fi-cu {
+    display: inline;}
+
+/* .table-responsive.device-page-angular{min-height:550px;} */
+
+.device-page-angular .ngx-dropdown-container .ngx-dropdown-list-container{
+    width:auto !important;
+}
+
+#table-large-menu tr td .ngx-dropdown-container button.ngx-dropdown-button span.nsdicon-angle-down {
+    background: #999;
+    color: #fff;
+    padding: 2px 5px;
+    font-size: 13px;
+    border-radius: 3px;
+}
+
+
+@media only screen and (min-width:1200px){
+
+.table-responsive.device-page-angular {
+    max-height: 800px;
+}
+
+}
+
+
+@media only screen and (max-width:1366px){
+
+.angular2-multiselectCustom{width: 15%;}
+}
+
+
+@media only screen and (max-width:1200px){
+
+.device-page-custom-ang div.search{margin-left: 25px;}
+
+.colourfilter{margin-left: 20px;}
+
+h1.page-title.device-page-custom-ang {
+    font-size: 28px;
+}
+
+    }
+
+
+@media only screen and (max-width:1023px){
+
+.device-page-custom-ang .ang-search-fi-cu{
+    display: inline-block;
+    width: 100%;
+    margin-top: 25px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button.download-btn{margin-top: 0;}
+
+h1.page-title.device-page-custom-ang {
+    margin-top: 0;
+}
+
+.device-page-custom-ang div.search{width: 320px;margin-left:0;}
+
+.angular2-multiselectCustom{width: 190px;}
+
+}
+
+
+@media only screen and (max-width:767px){
+
+
+.table-responsive.device-page-angular>.table>tbody>tr>td, .table-responsive.device-page-angular>.table>tbody>tr>th, 
+.table-responsive.device-page-angular>.table>tfoot>tr>td, .table-responsive.device-page-angular>.table>tfoot>tr>th, 
+.table-responsive.device-page-angular>.table>thead>tr>td, .table-responsive.device-page-angular>.table>thead>tr>th
+{
+white-space: normal;
+    }
+}
+
+
+@media only screen and (max-width:640px){
+
+.angular2-multiselectCustom{
+    width: 165px;
+}
+}
+
+@media only screen and (max-width:575px){
+
+    .device-page-custom-ang div.search{width: 210px;}
+
+    .colourfilter{
+    margin-left: 10px;
+    width: 130px;
+}
+
+button.download-btn {
+    padding: 8px 8px;
+}
+
+
+.device-page-custom-ang .btn {
+    padding: 8px 8px;font-size: 14px;}
+
+    h1.page-title.device-page-custom-ang{
+    text-align: center;
+}
+
+span.de-pg-ti {
+    display: block;
+    text-align: left;
+    padding-bottom: 20px;
+}
+
+.angular2-multiselectCustom{
+    width: 180px;
+}
+
+    }
+
+
+
+@media only screen and (max-width:400px){
+
+.device-page-custom-ang div.search{width: 185px;}
+
+
+}
+
+@media only screen and (max-width:355px){
+
+.device-page-custom-ang div.search{width: 150px;}
+
+.angular2-multiselectCustom{
+    width: 170px;
+}
+
+
+}
+
+/*SPINNER*/
+  

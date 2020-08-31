@@ -1,0 +1,137 @@
+<app-header-component></app-header-component>
+<ngx-spinner bdOpacity=0.4 bdColor="rgba(51,51,51,0.36)" size="large" color="#278cd8" type="ball-spin-fade"
+	[fullScreen]="true">
+	<p style="font-size: 20px;color: white"> Loading... </p>
+</ngx-spinner>
+<div class="container-fluid content">
+	<button (click)="exportAsXLSX()" class="download-btn"><i class="fa fa-file-excel-o"
+			style="font-size:48px;color:blue"></i>Download</button>
+	<h1 class="page-title device-page-custom-ang">
+		<span class="de-pg-ti">Devices:</span> <button type="button" (click)="run()" class="btn btn-success alert-button"><i class="fa fa-plus"></i>
+			New Device</button>
+		<div class="angular2-multiselectCustom">
+			<angular2-multiselect [data]="headerList" [(ngModel)]="selectedheaderlist" [settings]="Settings"
+				(onSelect)="onItemSelect($event)" (onDeSelect)="OnItemDeSelect($event)"
+				(onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)">
+			</angular2-multiselect>
+		</div>
+		<div class="ang-search-fi-cu"><div class="search">
+			<input name="searchText" [(ngModel)]="searchText" type="text" autocomplete="off"
+				placeholder="&#64;  Start searching" class="input-sm form-control">
+		</div>
+		<div *ngIf="colourSearchinput" class="colourfilter">
+			<input (input)="onSearchChange($event.target.value)" type="text" autocomplete="off"
+				placeholder="&#64;  Search By color" class="input-sm form-control">
+		</div></div>
+	</h1>
+
+	<div id="table-large-menu" class="table-responsive device-page-angular">
+		<table class="table table-striped table-hover table-list">
+			<thead>
+				<tr>
+					<th></th>
+					<th *ngIf="selectedFields.includes('Code')">Code</th>
+					<th *ngIf="selectedFields.includes('Type')">Device Type</th>
+					<th *ngIf="selectedFields.includes('Name')">Device</th>
+					<th *ngIf="selectedFields.includes('User')">User</th>
+					<th *ngIf="selectedFields.includes('Region')">Region</th>
+					<th *ngIf="selectedFields.includes('Location')">Location</th>
+					<th *ngIf="selectedFields.includes('Client')">Client</th>
+					<th *ngIf="selectedFields.includes('Contract')">Contract (time to end)</th>
+					<th *ngIf="selectedFields.includes('Contract End Date')">Contract End Date</th>
+					<th *ngIf="selectedFields.includes('Status')">Status</th>
+					<th *ngIf="selectedFields.includes('Comment')">Comment</th>
+					<th *ngIf="selectedFields.includes('Key Number')">Key Number</th>
+					<th *ngIf="selectedFields.includes('Last Counter')">Last Counter</th>
+					<th *ngIf="selectedFields.includes('Rent')">Rent</th>
+					<th *ngIf="selectedFields.includes('Efficiency')">Efficiency</th>
+				</tr>
+			</thead>
+			<tbody *ngIf="deviceData?.length > 0">
+				<tr>
+					<td></td>
+					<td *ngIf="selectedFields.includes('Code')">
+						<input [(ngModel)]="code" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Type')">
+						<ngx-select-dropdown (change)="onSelect($event,'Device_type')" [config]="config3"
+							[options]="dList" [multiple]="true">
+						</ngx-select-dropdown>
+					</td>
+					<td *ngIf="selectedFields.includes('Name')">
+						<input [(ngModel)]="name" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('User')">
+						<ngx-select-dropdown (change)="onSelect($event,'user_type')" [config]="config5"
+							[options]="userList" [multiple]="true">
+						</ngx-select-dropdown>
+					</td>
+					<td *ngIf="selectedFields.includes('Region')">
+						<ngx-select-dropdown (change)="onSelect($event,'region_type')" [config]="config4"
+							[options]="regionList" [multiple]="true">
+						</ngx-select-dropdown>
+					</td>
+					<td *ngIf="selectedFields.includes('Location')">
+						<input [(ngModel)]="location" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Client')">
+						<input [(ngModel)]="Client" type="text" placeholder="Client" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Contract')"></td>
+					<td *ngIf="selectedFields.includes('Contract End Date')"></td>
+					<td *ngIf="selectedFields.includes('Status')">
+						<ngx-select-dropdown (change)="onSelect($event,'Status')" [config]="config" [options]="uniVal"
+							[multiple]="true">
+						</ngx-select-dropdown>
+					</td>
+					<td *ngIf="selectedFields.includes('Comment')">
+						<input [(ngModel)]="comment" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Key Number')">
+						<input [(ngModel)]="key" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Last Counter')">
+						<input [(ngModel)]="counter_count" type="text" placeholder="Search"
+							class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Rent')">
+						<input [(ngModel)]="rent_cost" type="text" placeholder="Search" class="input-sm form-control">
+					</td>
+					<td *ngIf="selectedFields.includes('Efficiency')"></td>
+				</tr>
+				<tr *ngFor="let device of deviceData | filter : searchText | deviceSort | deviceSearch: code: type:name:assign_to:region:location:Client:comment:key:counter_count:rent_cost; let i=index;" (click)="deviceCall(device.code)" [ngClass]="highlightDevice(device)">
+				<td>
+					<button (click)="markDevice(device.code)" *ngIf="showcheck" data-toggle="tooltip"
+						data-placement="right" class="btn btn-xs btn-danger" title="Mark device as retrieved"><i
+							class="fa fa-check"></i></button>
+				</td>
+				<td *ngIf="selectedFields.includes('Code')">{{device.code}}</td>
+				<td *ngIf="selectedFields.includes('Type')">{{device.type}}</td>
+				<td *ngIf="selectedFields.includes('Name')"><strong>{{device.name}}</strong></td>
+				<td *ngIf="selectedFields.includes('User')"><strong>{{device.assign_to}}</strong></td>
+				<td *ngIf="selectedFields.includes('Region')"><strong>{{device.region}}</strong></td>
+
+				<td *ngIf="selectedFields.includes('Location')">{{device.location}}</td>
+				<td *ngIf="selectedFields.includes('Client')">{{device.contractField_client_name}}</td>
+				<td *ngIf="selectedFields.includes('Contract')">
+					<span *ngIf="device.contract!=null">{{device.contract.name}}
+						({{device.contract.end_date | countDays : 'getdiff' }})</span>
+					<span class="text-muted" *ngIf="device.contract==null">None</span></td>
+				<td *ngIf="selectedFields.includes('Contract End Date')">
+					<span *ngIf="device.contract!=null">{{device.contract.end_date | countDays : 'dateType' }}</span>
+					<span class="text-muted" *ngIf="device.contract==null">None</span></td>
+				<td *ngIf="selectedFields.includes('Status')">
+					<span class="label" [ngClass]="labelType(device.status)">{{device.status}}</span>
+				</td>
+				<td *ngIf="selectedFields.includes('Comment')">
+					{{device.comment | limit: 20}}{{device.comment.length > 20 ? '...' : ''}}</td>
+				<td *ngIf="selectedFields.includes('Key Number')">{{device.key}}</td>
+				<td *ngIf="selectedFields.includes('Last Counter')">{{device.counter_count}}</td>
+				<td *ngIf="selectedFields.includes('Rent')">{{device.rent_cost}}</td>
+				<td *ngIf="selectedFields.includes('Efficiency')">{{device.counter_count - device.rent_cost}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<app-footer-component></app-footer-component>

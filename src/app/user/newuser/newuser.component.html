@@ -1,0 +1,61 @@
+<app-header-component></app-header-component>
+<div class="container content scope">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">New Account</h1>
+	<div class="well">
+		
+		<div [ngClass]="msgClass">
+			{{errormsg}}
+		</div>
+		<form  [formGroup]="formdata" (ngSubmit)="newaccount(formdata.value)">
+			<div class="form-group">
+				<div class="input-group"><span class="input-group-addon">@</span>
+					<input type="text" placeholder="Username" formControlName="username" class="form-control">
+				</div>
+				<div class="alert alert-danger" *ngIf="formdata.get('username').hasError('required') && formdata.get('username').touched">This field is required</div>
+			</div>
+			<div class="form-group">
+				
+				<input type="text" placeholder="E-Mail" formControlName="email" class="form-control">
+				
+	            <div class="alert alert-danger" *ngIf="formdata.get('email').hasError('required') && formdata.get('email').touched">This field is required</div>
+				<div class="alert alert-danger" *ngIf="formdata.get('email').hasError('pattern') && formdata.get('email').touched">Invalid email format.</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group"><span class="input-group-addon">@</span>
+					<input type="text" placeholder="Slack" formControlName="slack" class="form-control">
+				</div>
+				<div class="alert alert-danger" *ngIf="formdata.get('slack').hasError('required') && formdata.get('slack').touched">This field is required</div>
+			</div>
+			<div class="form-group">
+				<select formControlName="region" class="form-control">
+					<option *ngFor="let region of regions" value="{{region.region_name}}">{{region.region_name}}</option>
+				</select>
+				<div class="alert alert-danger" *ngIf="formdata.get('region').hasError('required') && formdata.get('region').touched">This field is required</div>
+			</div>
+			<div class="form-group">
+				<input type="text" placeholder="Location" formControlName="location" class="form-control">
+				<div class="alert alert-danger" *ngIf="formdata.get('location').hasError('required') && formdata.get('location').touched">This field is required</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label">Send activation link to:</label>
+				<div class="radio">
+					<label>
+					<input type="radio" value="slack" formControlName="method" name="method" selected><i class="fa fa-slack"></i>  Slack
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+					<input type="radio" value="email" formControlName="method" name="method"><i class="fa fa-envelope"></i>  E-Mail
+					</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<button [disabled]="!formdata.valid" class="btn btn-success"><i class="fa fa-check"></i><i show="sending" class="fa fa-spinner fa-pulse hide"></i>  Add</button>
+			</div>
+		</form>
+	</div>
+	<!------------well-end----------->
+</div>
+<!------------conatiner-end----------->
+<app-footer-component></app-footer-component>

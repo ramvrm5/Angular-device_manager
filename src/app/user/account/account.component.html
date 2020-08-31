@@ -1,0 +1,62 @@
+<app-header-component></app-header-component>
+<div class="container content account-angular-custom">
+	<button class="btn btn-info" (click)="auth.goBack()"><i class="fa fa-arrow-left"></i> Back</button>
+	<h1 class="page-title">Hey, <strong> @{{username}}</strong></h1>
+	<div class="well levelabout-acco">
+		<h2>About:</h2>
+		<h4><i class="fa fa-envelope"></i> <strong>E-Mail:</strong><span *ngIf="!email"><span>{{emamil}}</span>
+			<button (click)="email_hide()" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Change</button></span>
+		</h4>
+		<span *ngIf="email">
+			<form [formGroup]="emailForm" class="well well-sm" (ngSubmit)="emailupdate(emailForm.value)">
+				<div class="form-group">
+					<input type="text" formControlName="emailVal" placeholder="E-Mail" class="form-control">
+				</div>
+				<div class="form-group">
+					<button [disabled]="!emailForm.valid" class="btn btn-sm btn-success"><i class="fa fa-check"></i> Save</button>
+					<button (click)="email_hide()" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Cancel</button>
+				</div>
+			</form>
+		</span>
+		<h4 >
+			<i class="fa fa-slack"></i> <strong>Slack:</strong>
+			<span *ngIf="!slack">
+				<span> @{{slack_data}}</span>
+			<button (click)="slack_hide()" class="btn btn-xs btn-warning"><i class="fa fa-edit"></i> Change</button></span>
+		</h4>
+		<span *ngIf="slack">
+			<form [formGroup]="slackForm" class="well well-sm" (ngSubmit)="slackupdate(slackForm.value)">
+				<div class="form-group">
+					<div class="input-group"><span class="input-group-addon">@</span>
+						<input type="text" formControlName="slackname" placeholder="Username" class="form-control">
+					</div>
+				</div>
+				<div class="form-group">
+					<button [disabled]="!slackForm.valid" class="btn btn-sm btn-success"><i class="fa fa-check"></i>  Save</button>
+					<button (click)="slack_hide()" class="btn btn-sm btn-danger"><i class="fa fa-times"></i> Cancel</button>
+				</div>
+			</form>
+		</span>
+	</div>
+	<!------------well-end----------->
+	<div class="well">
+		<h2>Change Password:</h2>
+		<form [formGroup]="changePass" class="well well-sm" (ngSubmit)="updatePass(changePass.value)">
+			<div class="form-group">
+				<input type="password" formControlName="oldPassword" placeholder="Old Password" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<input type="password" formControlName="newPassword" placeholder="New Password" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<input type="password" formControlName="confirmPass" placeholder="Confirm New Password" required="" class="form-control">
+			</div>
+			<div class="form-group">
+				<!--div class="alert alert-danger" *ngIf="changePass.controls.confirmPass.errors?.MatchPassword">Password not match</div-->
+				<button [disabled]="!changePass.valid" type="submit" class="btn btn-warning"><i class="fa fa-key"></i> Change password</button>
+			</div>
+		</form>
+	</div>
+</div>
+<!------------conatiner-end----------->
+<app-footer-component></app-footer-component>

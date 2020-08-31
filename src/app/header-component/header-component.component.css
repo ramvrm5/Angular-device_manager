@@ -1,0 +1,70 @@
+.NotificationListSettings{
+    background-color: #eaeaea;
+    z-index: 9999;
+    position: absolute;
+    font-size: 16px;
+    height: 225px;
+    overflow-y: scroll;
+    width: 304px;
+    border-radius: 6px;
+    left: -228px;
+    top: 47px;
+}
+.NotificationSettings{
+    min-height: 4.8%;
+    position: absolute;
+    top: 15px;
+    right: 176px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.iconcustom{
+    color: white;
+    font-size: 26px;
+}
+.NotificationListSettings > li > a{
+    color: #9d9d9d !important;
+}
+.NotificationListSettings > li > a:hover{
+    color: #18bc9c !important;
+}
+.arrowtriangle{
+    width: 0;
+    height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-bottom: 15px solid #eaeaea;
+    position: absolute;
+    top: 32px;
+    left: -1px;
+}
+
+@media only screen and (max-width:1350px){
+
+    .NotificationSettings{right: 156px;}
+
+    }
+
+
+@media only screen and (max-width:1199px){
+
+    .NotificationSettings{right: 96px;}
+
+    }
+
+
+@media only screen and (max-width:767px){
+
+    .NotificationSettings{right: 70px;}
+
+    }
+
+
+@media only screen and (max-width:365px){
+
+    .NotificationListSettings{
+        width: 275px;
+        left: -175px;
+    }
+
+    }

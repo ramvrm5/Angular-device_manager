@@ -1,0 +1,154 @@
+<app-header-component></app-header-component>
+<div class="container content">
+	<div class="device-container">
+		<button (click)="goBack()" class="btn btn-info"><i class="fa fa-chevron-left"></i> Back</button>
+		<h5>Device:</h5>
+		<h2>{{device.type}}: {{device.name}}</h2>
+		<h4>{{device.code}}</h4>
+
+		<!---well-start--->
+
+		<div class="well">
+			<h3>Counter Settings
+				<button *ngIf="device.coinbox_enabled" class="btn btn-info pull-right"><i class="fa fa-refresh"></i> Reset</button>
+			</h3>
+			<div *ngIf="!device.coinbox_enabled" class="form-group">
+				<button (click)="setEnabled('coinbox_enabled', true)" class="btn btn-success"><i class="fa fa-plus"></i> Enable</button>
+			</div>
+			<div *ngIf="device.coinbox_enabled" class="form-group">
+				<button (click)="setEnabled('coinbox_enabled', false)" class="btn btn-default"><i class="fa fa-times"></i> Disable</button>
+			</div>
+			<span *ngIf="device.coinbox_enabled &amp;&amp; device.counter_count &lt; 2">
+				<div class="form-group">
+					<button (click)="setCounterCount(2)" class="btn btn-primary"><i class="fa fa-ellipsis-v"></i>  Set to multiple counters</button>
+				</div>
+				<form class="ng-pristine ng-valid">
+					<div class="form-group">
+						<label class="control-label">Maximum value (for overflow detection)</label>
+						<input name="counter_max" [(ngModel)]="settings.counter_max" [disabled]="saving" class="form-control ng-valid">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Value divisor (X in value=counter/X)</label>
+						<input name="counter_divisor" [(ngModel)]="settings.counter_divisor" [disabled]="saving" class="form-control ng-valid">
+					</div>
+					<div class="form-group">
+						<button *ngIf="!saving" type="submit" (click)="save('counter')" class="btn btn-success"><i class="fa fa-save"></i>  Save</button>
+						<button *ngIf="saving" class="btn btn-success disabled"><i class="fa fa-spinner fa-pulse"></i>  Saving</button> 
+					</div>
+				</form>
+			</span>
+			<span *ngIf="device.coinbox_enabled &amp;&amp; device.counter_count &gt;= 2">
+				<div class="form-group">
+					<button (click)="setCounterCount(1)" class="btn btn-primary"><i class="fa fa-circle"></i>  Set to one counter</button>
+				</div>
+				<form class="ng-invalid">
+					<div class="form-group">
+						<label class="control-label">Maximum value (for overflow detection)</label>
+						<input name="counter_max" [(ngModel)]="settings.counter_max" [disabled]="saving" class="form-control ng-valid">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Value divisor (X in value=counter/X)</label>
+						<input name="counter_divisor" [(ngModel)]="settings.counter_divisor" [disabled]="saving" class="form-control ng-valid">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Number of counters</label>
+						<input name="counter_count" [(ngModel)]="settings.counter_count" [disabled]="saving" type="number" min="2" class="form-control ng-invalid">
+					</div>
+					<div class="form-group">
+						<div class="panel">
+							<div class="panel-body">
+								Counter label will be determined by looking at it from the front of the device and counting
+								to it in reading direction.
+								<p>Example:</p>
+								<p><strong>1  2</strong></p>
+								<p><strong>3  4</strong></p>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<button *ngIf="!saving" type="submit" (click)="save('counter')" class="btn btn-success"><i class="fa fa-save"></i>  Save</button>
+						<button *ngIf="saving"  class="btn btn-success disabled"><i class="fa fa-spinner fa-pulse"></i>  Saving</button>
+					</div>
+				</form>
+			</span>
+		</div>
+
+		<!---well-end--->
+
+		<!---well-start--->
+
+		<div class="well">
+			<h3>Variable Output
+			</h3>
+			<h6>Turn on, if you want to be able to change, what kind of service device outputs (Ex. change between gummy
+				candy and chocolate candy. This will help you later get statistics of how much of something was outputed.
+			</h6>
+			<h4><strong>Status:</strong><span *ngIf="device.variable_output" class="text-success"> Enabled</span><span *ngIf="!device.variable_output" class="text-danger "> Disabled</span></h4>
+			<div *ngIf="!device.variable_output" class="form-group">
+				<button (click)="setEnabled('variable_output', true)" class="btn btn-success"><i class="fa fa-plus"></i> Enable</button>
+			</div>
+			<div *ngIf="device.variable_output" class="form-group">
+				<button (click)="setEnabled('variable_output', false)" class="btn btn-default"><i class="fa fa-times"></i> Disable</button>
+			</div>
+		</div>
+
+		<!---well-end--->
+
+		<!---well-start--->
+		
+		<div class="well">
+			<h3>Uneven Output Counter
+			</h3>
+			<h6>Turn on, if device has separate counter for how much it has outputed something (Ex. prize) and where coin counter and output counter are not connected (Ex. claw cranes, where prize is outputted on only some games)</h6>
+			<h4><strong>Status:</strong><span *ngIf="device.uneven_output" class="text-success"> Enabled</span><span *ngIf="!device.uneven_output" class="text-danger"> Disabled</span></h4>
+			<div *ngIf="!device.uneven_output" class="form-group">
+				<button (click)="setEnabled('uneven_output',true)" class="btn btn-success"><i class="fa fa-plus"></i> Enable</button>
+			</div>
+			<div *ngIf="device.uneven_output" class="form-group">
+				<button (click)="setEnabled('uneven_output',false)" class="btn btn-default"><i class="fa fa-times"></i> Disable</button>
+			</div>
+		</div>
+
+		<!---well-end--->
+
+		<!---well-start--->
+
+		<div class="well">
+			<h3>Space Rental Price
+				<button *ngIf="device.pay_for_rent" class="btn btn-info pull-right"><i class="fa fa-refresh"></i> Reset</button>
+			</h3>
+			<div *ngIf="!device.pay_for_rent" class="form-group">
+				<button (click)="setEnabled('Space_Rental',true)" class="btn btn-success"><i class="fa fa-plus"></i> Enable</button>
+			</div>
+			<div *ngIf="device.pay_for_rent" class="form-group">
+				<button (click)="setEnabled('Space_Rental',false)" class="btn btn-default"><i class="fa fa-times"></i> Disable</button>
+			</div>
+			<span *ngIf="device.pay_for_rent">
+				<form class="ng-pristine ng-valid">
+					<div class="form-group">
+						<label class="control-label">Cost of Rent for Space</label>
+						<input name="rent_cost" [(ngModel)]="settings.rent_cost" [disabled]="saving" class="form-control">
+					</div>
+					<div class="form-group">
+						<button *ngIf="!saving" type="submit" (click)="save('rental')" class="btn btn-success"><i class="fa fa-save"></i>
+							Save</button>
+						<button *ngIf="saving" class="btn btn-success disabled"><i class="fa fa-spinner fa-pulse"></i>
+							Saving</button>
+					</div>
+				</form>
+			</span>
+		</div>
+
+		<!---well-end--->
+
+		<div class="well">
+			<h3>Call Home Settings</h3>
+			<h4><strong>Status:</strong><span *ngIf="device.callhome_enabled" class="text-success"> Enabled</span><span *ngIf="!device.callhome_enabled" class="text-danger"> Disabled</span></h4>
+			<button *ngIf="!device.callhome_enabled" (click)="setEnabled('callhome_enabled', true)" class="btn btn-success disabled"><i class="fa fa-plus"></i> Enable</button>
+			<button *ngIf="device.callhome_enabled" (click)="setEnabled('callhome_enabled', false)" class="btn btn-default"><i class="fa fa-times"></i> Disable</button>
+		</div>
+	</div>
+
+<!------------device-conatiner-end----------->
+
+</div>
